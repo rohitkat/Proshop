@@ -17,7 +17,7 @@ function LoginScreen() {
 
     useEffect(() => {
         if(userInfo != null){
-            //navigate(-1)
+            navigate(-1)
         }
     },[userInfo])
 
