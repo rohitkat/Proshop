@@ -9,6 +9,10 @@ import {
     USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
+
+    USER_DETAILS_FAIL,
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
  } from '../constants/userConstants'
 
  export const userLogin = (email, password) => async(dispatch) => {
@@ -53,6 +57,35 @@ import {
     localStorage.removeItem('userInfo')
  }
 
+ export const userProfile = (id) => async(dispatch,getState) => {
+    try{
+        dispatch({type : USER_DETAILS_REQUEST})
+        const userInfo = getState().userLogin.userInfo
+        const config = {
+            headers:{
+                'Content-type':'application/json',
+                'Authorization':`Bearer ${userInfo.token}`
+            }
+        }
+
+        const {data} = await axios.get(
+            'http://127.0.0.1:8000/api/users/profile',
+            config
+        )
+
+        dispatch({
+            type: USER_DETAILS_SUCCESS,
+            payload: data
+        })
+
+    }catch(error){
+        dispatch({
+            type : USER_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message
+        })
+    }
+ }
+ 
  export const Register = (name, email, password) => async(dispatch) => {
     try{
         dispatch({type : USER_REGISTER_REQUEST})
